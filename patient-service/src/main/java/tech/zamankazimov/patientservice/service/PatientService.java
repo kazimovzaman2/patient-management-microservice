@@ -5,6 +5,7 @@ import tech.zamankazimov.patientservice.dto.PatientRequestDTO;
 import tech.zamankazimov.patientservice.dto.PatientResponseDTO;
 import tech.zamankazimov.patientservice.exception.PatientNotFoundException;
 import tech.zamankazimov.patientservice.grpc.BillingServiceGrpcClient;
+import tech.zamankazimov.patientservice.kafka.KafkaProducer;
 import tech.zamankazimov.patientservice.mapper.PatientMapper;
 import tech.zamankazimov.patientservice.model.Patient;
 import tech.zamankazimov.patientservice.repository.PatientRepository;
@@ -19,11 +20,13 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
+    private final KafkaProducer kafkaProducer;
 
 
-    public PatientService(PatientRepository patientRepository, BillingServiceGrpcClient billingServiceGrpcClient) {
+    public PatientService(PatientRepository patientRepository, BillingServiceGrpcClient billingServiceGrpcClient, KafkaProducer kafkaProducer) {
         this.patientRepository = patientRepository;
         this.billingServiceGrpcClient = billingServiceGrpcClient;
+        this.kafkaProducer = kafkaProducer;
     }
 
 
@@ -38,6 +41,7 @@ public class PatientService {
         }
         Patient newPatient = patientRepository.save(PatientMapper.toModel(patientRequestDTO));
         billingServiceGrpcClient.createBillingAccount(newPatient.getId().toString(), newPatient.getName(), newPatient.getEmail());
+        kafkaProducer.sendEvent(newPatient);
         return PatientMapper.toDTO(newPatient);
     }
 
