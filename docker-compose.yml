@@ -61,7 +61,7 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
       # PostgreSQL
-      SPRING_DATASOURCE_URL: jdbc:postgresql://patient-service-db:5000/patient
+      SPRING_DATASOURCE_URL: jdbc:postgresql://patient-service-db:5432/patient
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
@@ -129,7 +129,7 @@ services:
       - microservices-net
     environment:
       # PostgreSQL
-      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-service-db:5001/authdb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-service-db:5432/authdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
