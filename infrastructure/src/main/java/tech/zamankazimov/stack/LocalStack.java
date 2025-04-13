@@ -271,7 +271,7 @@ public class LocalStack extends Stack {
     }
 
     public static void main(final String[] args) {
-        App app = new App(AppProps.builder().outdir("./cdk.out").build());
+        App app = new App(AppProps.builder().outdir("./infrastructure/cdk.out").build());
         StackProps props = StackProps.builder().synthesizer(new BootstraplessSynthesizer()).build();
 
         new LocalStack(app, "localstack", props);
