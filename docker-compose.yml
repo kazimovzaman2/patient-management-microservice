@@ -126,7 +126,7 @@ services:
     ports:
       - "4005:4005"
     networks:
-      - app-network
+      - microservices-net
     environment:
       # PostgreSQL
       SPRING_DATASOURCE_URL: jdbc:postgresql://auth-service-db:5432/authdb
