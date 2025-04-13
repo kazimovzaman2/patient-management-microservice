@@ -14,6 +14,18 @@ services:
     networks:
       - microservices-net
 
+  auth-service-db:
+    image: postgres:15
+    container_name: auth-service-db
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-net
+
   kafka:
     image: bitnami/kafka:latest
     container_name: kafka
@@ -104,6 +116,35 @@ services:
       SPRING_APPLICATION_NAME: analytics-service
       SERVER_PORT: 4002
       LOGGING_LEVEL_ROOT: info
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    depends_on:
+      - auth-service-db
+    ports:
+      - "4005:4005"
+    networks:
+      - app-network
+    environment:
+      # PostgreSQL
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-service-db:5432/authdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+      # JPA
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_SQL_INIT_MODE: always
+
+      # App
+      SPRING_APPLICATION_NAME: auth-service
+      SERVER_PORT: 4005
+      LOGGING_LEVEL_ROOT: info
+      JWT_SECRET: c770800082dc503ceb65137bb945dc37f4b49d30ae59aade779386242b4650933eb45d0c8deaefbcbc0a4c491f2692aefd846ed3f4169ad2baf518f730e95d08
+
 
 networks:
   microservices-net:

@@ -1,10 +1,10 @@
 ### Create a new patient entity
-POST http://localhost:4004/patients
+POST http://46.101.236.22:4000/patients
 Content-Type: application/json
 
 {
   "name": "John Doe with billing account",
-  "email": "test_billing_account1@example.com",
+  "email": "test_billing_account@example.com",
   "address": "123 main street",
   "dateOfBirth": "1995-09-09",
   "registeredDate": "2024-11-28"
