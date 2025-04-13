@@ -77,6 +77,19 @@ services:
     networks:
       - microservices-net
 
+  analytics-service:
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile
+    depends_on:
+      - patient-service-db
+      - kafka
+    ports:
+      - "4002:4002"
+    networks:
+      - microservices-net
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
 networks:
   microservices-net:
