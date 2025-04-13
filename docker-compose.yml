@@ -9,8 +9,6 @@ services:
       POSTGRES_DB: patient
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5000:5432"
     networks:
       - microservices-net
 
@@ -21,8 +19,6 @@ services:
       POSTGRES_DB: authdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5001:5432"
     networks:
       - microservices-net
 
@@ -30,8 +26,6 @@ services:
     image: bitnami/kafka:latest
     container_name: kafka
     restart: always
-    ports:
-      - "9094:9094"
     environment:
       KAFKA_CFG_NODE_ID: 0
       KAFKA_CFG_PROCESS_ROLES: controller,broker
@@ -50,8 +44,6 @@ services:
     depends_on:
       - patient-service-db
       - kafka
-    ports:
-      - "4000:4000"
     networks:
       - microservices-net
     environment:
@@ -87,9 +79,6 @@ services:
     depends_on:
       - patient-service-db
       - kafka
-    ports:
-      - "4001:4001"
-      - "9001:9001"
     networks:
       - microservices-net
     environment:
@@ -104,8 +93,6 @@ services:
     depends_on:
       - patient-service-db
       - kafka
-    ports:
-      - "4002:4002"
     networks:
       - microservices-net
     environment:
@@ -123,8 +110,6 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - auth-service-db
-    ports:
-      - "4005:4005"
     networks:
       - microservices-net
     environment:
@@ -145,6 +130,22 @@ services:
       LOGGING_LEVEL_ROOT: info
       JWT_SECRET: c770800082dc503ceb65137bb945dc37f4b49d30ae59aade779386242b4650933eb45d0c8deaefbcbc0a4c491f2692aefd846ed3f4169ad2baf518f730e95d08
 
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    depends_on:
+      - auth-service
+      - patient-service
+    ports:
+      - "4004:4004"
+    networks:
+      - microservices-net
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:4005
+      SPRING_APPLICATION_NAME: gateway
+      SERVER_PORT: 4004
+      LOGGING_LEVEL_ROOT: info
 
 networks:
   microservices-net:
